@@ -1,0 +1,26 @@
+{
+  "name": "pdf-itinerary-export",
+  "version": "1.0.0",
+  "description": "## Overview",
+  "main": "index.js",
+  "scripts": {
+    "start":"node ./src/index.js",
+    "dev:watch":"node --watch ./src/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AmeliaFFF/pdf-itinerary-export.git"
+  },
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/AmeliaFFF/pdf-itinerary-export/issues"
+  },
+  "homepage": "https://github.com/AmeliaFFF/pdf-itinerary-export#readme",
+  "dependencies": {
+    "express": "^5.2.1",
+    "pdfkit": "^0.18.0"
+  }
+}
