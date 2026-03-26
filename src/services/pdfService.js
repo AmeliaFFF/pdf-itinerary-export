@@ -1,6 +1,19 @@
 const PDFDocument = require("pdfkit");
 const { formatDate, formatTime } = require("../utils/dateUtils");
 
+// Return context-specific labels for start and end times based on trip item type.
+const getTimeLabels = (type) => {
+    switch (type) {
+        case "flight":
+        case "cruise":
+            return { start: "Departure", end: "Arrival" };
+        case "accommodation":
+            return { start: "Check-in", end: "Check-out" };
+        default:
+            return { start: "Start", end: "End" };
+    }
+}
+
 const generateItineraryPDF = (preparedData, response) => {
     const trip = preparedData.trip;
     const groupedTripItems = preparedData.groupedTripItems;
@@ -52,12 +65,14 @@ const generateItineraryPDF = (preparedData, response) => {
                 doc.text(`  Type: ${tripItem.type.charAt(0).toUpperCase() + tripItem.type.slice(1)}`);
             }
 
+            const labels = getTimeLabels(tripItem.type);
+
             if (tripItem.startDateTime) {
-                doc.text(`  Start: ${formatTime(tripItem.startDateTime)}`);
+                doc.text(`  ${labels.start}: ${formatDate(tripItem.startDateTime)}, ${formatTime(tripItem.startDateTime)}`);
             }
 
             if (tripItem.endDateTime) {
-                doc.text(`  End: ${formatTime(tripItem.endDateTime)}`);
+                doc.text(`  ${labels.end}: ${formatDate(tripItem.endDateTime)}, ${formatTime(tripItem.endDateTime)}`);
             }
 
             if (tripItem.location) {
