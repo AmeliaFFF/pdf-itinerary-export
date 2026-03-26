@@ -12,9 +12,17 @@ const prepareItineraryData = (payload) => {
         throw new Error("Trip items must be an array");
     }
 
+    // 3. Sort tripItems by startDateTime.
+    const sortedTripItems = tripItems.sort((a, b) => {
+        const dateA = new Date(a.startDateTime);
+        const dateB = new Date(b.startDateTime);
+
+        return dateA - dateB;
+    })
+
     return {
         trip,
-        tripItems
+        tripItems: sortedTripItems
     };
 };
 
@@ -23,7 +31,5 @@ module.exports = {
 };
 
 // TODO:
-
-// 3. Sort tripItems by startDateTime.
 
 // 4. Group tripItems by day.
