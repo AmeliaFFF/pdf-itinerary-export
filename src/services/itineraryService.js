@@ -14,22 +14,38 @@ const prepareItineraryData = (payload) => {
 
     // 3. Sort tripItems by startDateTime.
     const sortedTripItems = tripItems.sort((a, b) => {
+        // Convert startDateTime to Date objects for comparison.
         const dateA = new Date(a.startDateTime);
         const dateB = new Date(b.startDateTime);
-
+        // Sort in ascending order (earliest first).
         return dateA - dateB;
     })
 
+    // 4. Group tripItems by day.
+    const groupedTripItems = {};
+    
+    for (let i = 0; i < sortedTripItems.length; i++) {
+        const tripItem = sortedTripItems[i];
+
+        // Create a date key in YYYY-MM-DD format.
+        const dateKey = new Date(tripItem.startDateTime).toISOString().split("T")[0];
+
+        // If this date does not exist yet, create an empty array for it.
+        if (!groupedTripItems[dateKey]) {
+            groupedTripItems[dateKey] = [];
+        }
+
+        // Add the trip item to the correct date group.
+        groupedTripItems[dateKey].push(tripItem);
+    }
+
     return {
         trip,
-        tripItems: sortedTripItems
+        tripItems: sortedTripItems,
+        groupedTripItems
     };
 };
 
 module.exports = {
     prepareItineraryData
 };
-
-// TODO:
-
-// 4. Group tripItems by day.
