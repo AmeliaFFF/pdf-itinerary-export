@@ -1,4 +1,5 @@
 const PDFDocument = require("pdfkit");
+const { formatDate, formatTime } = require("../utils/dateUtils");
 
 const generateItineraryPDF = (preparedData, response) => {
     const trip = preparedData.trip;
@@ -19,11 +20,11 @@ const generateItineraryPDF = (preparedData, response) => {
     doc.moveDown(0.5);
 
     if (trip.startDate) {
-        doc.text(`Start Date: ${trip.startDate}`);
+        doc.text(`Start Date: ${formatDate(trip.startDate)}`);
     }
 
     if (trip.endDate) {
-        doc.text(`End Date: ${trip.endDate}`);
+        doc.text(`End Date: ${formatDate(trip.endDate)}`);
     }
 
     if (trip.status) {
@@ -37,7 +38,7 @@ const generateItineraryPDF = (preparedData, response) => {
     doc.moveDown(0.5);
 
     for (const dateKey in groupedTripItems) {
-        doc.fontSize(12).text(dateKey);
+        doc.fontSize(12).text(formatDate(dateKey));
         doc.moveDown(0.5);
 
         const tripItemsForDay = groupedTripItems[dateKey];
@@ -52,7 +53,11 @@ const generateItineraryPDF = (preparedData, response) => {
             }
 
             if (tripItem.startDateTime) {
-                doc.text(`  Start: ${tripItem.startDateTime}`);
+                doc.text(`  Start: ${formatTime(tripItem.startDateTime)}`);
+            }
+
+            if (tripItem.endDateTime) {
+                doc.text(`  End: ${formatTime(tripItem.endDateTime)}`);
             }
 
             if (tripItem.location) {
