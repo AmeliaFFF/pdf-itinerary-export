@@ -26,9 +26,10 @@ const prepareItineraryData = (payload) => {
     
     for (let i = 0; i < sortedTripItems.length; i++) {
         const tripItem = sortedTripItems[i];
+        const date = new Date(tripItem.startDateTime);
 
-        // Create a date key in YYYY-MM-DD format.
-        const dateKey = new Date(tripItem.startDateTime).toISOString().split("T")[0];
+        // Create a date key in YYYY-MM-DD format using local date parts.
+        const dateKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
 
         // If this date does not exist yet, create an empty array for it.
         if (!groupedTripItems[dateKey]) {
