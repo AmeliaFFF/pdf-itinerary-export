@@ -1,6 +1,12 @@
 const PDFDocument = require("pdfkit");
 const { formatDate, formatTime } = require("../utils/dateUtils");
 
+// Helper function to capitalise the first letter of a string.
+const capitaliseFirstLetter = (value) => {
+    if (!value) return value;
+    return value.charAt(0).toUpperCase() + value.slice(1);
+};
+
 // Return context-specific labels for start and end times based on trip item type.
 const getTimeLabels = (type) => {
     switch (type) {
@@ -12,7 +18,7 @@ const getTimeLabels = (type) => {
         default:
             return { start: "Start", end: "End" };
     }
-}
+};
 
 const generateItineraryPDF = (preparedData, response) => {
     const trip = preparedData.trip;
@@ -41,7 +47,11 @@ const generateItineraryPDF = (preparedData, response) => {
     }
 
     if (trip.status) {
-        doc.text(`Status: ${trip.status}`);
+        doc.text(`Status: ${capitaliseFirstLetter(trip.status)}`);
+    }
+
+    if (trip.notes) {
+        doc.text(`Notes: ${trip.notes}`);
     }
 
     doc.moveDown();
@@ -58,14 +68,25 @@ const generateItineraryPDF = (preparedData, response) => {
 
         for (let i = 0; i < tripItemsForDay.length; i++) {
             const tripItem = tripItemsForDay[i];
+            const labels = getTimeLabels(tripItem.type);
 
             doc.text(`• ${tripItem.title}`);
 
             if (tripItem.type) {
-                doc.text(`  Type: ${tripItem.type.charAt(0).toUpperCase() + tripItem.type.slice(1)}`);
+                doc.text(`  Type: ${capitaliseFirstLetter(tripItem.type)}`);
             }
 
-            const labels = getTimeLabels(tripItem.type);
+            if (tripItem.status) {
+                doc.text(`  Status: ${capitaliseFirstLetter(tripItem.status)}`);
+            }
+
+            if (tripItem.provider) {
+                doc.text(`  Provider: ${tripItem.provider}`);
+            }
+
+            if (tripItem.bookingReference) {
+                doc.text(`  Booking Reference: ${tripItem.bookingReference}`);
+            }
 
             if (tripItem.startDateTime) {
                 doc.text(`  ${labels.start}: ${formatDate(tripItem.startDateTime)}, ${formatTime(tripItem.startDateTime)}`);
@@ -79,10 +100,18 @@ const generateItineraryPDF = (preparedData, response) => {
                 doc.text(`  Location: ${tripItem.location}`);
             }
 
+            if (tripItem.cost !== undefined && tripItem.cost !== null && tripItem.currencyCode) {
+                doc.text(`  Cost: ${tripItem.currencyCode} ${tripItem.cost}`);
+            }
+
+            if (tripItem.notes) {
+                doc.text(`  Notes: ${tripItem.notes}`);
+            }
+
             doc.moveDown(0.5);
         }
 
-        doc.moveDown();        
+        doc.moveDown();
     }
 
     // Finalise the PDF document.
