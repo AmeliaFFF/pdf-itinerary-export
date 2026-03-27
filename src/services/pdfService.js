@@ -31,11 +31,13 @@ const generateItineraryPDF = (preparedData, response) => {
     doc.pipe(response);
 
     // Add the main title.
-    doc.fontSize(20).text(`${trip.title} Itinerary`);
+    doc.font("Helvetica-Bold").fontSize(22).text(`${trip.title} Itinerary`);
     doc.moveDown();
+    doc.font("Helvetica");
 
     // Add a basic trip summary section.
-    doc.fontSize(14).text("Trip Summary");
+    doc.font("Helvetica-Bold").fontSize(18).text("Trip Summary");
+    doc.font("Helvetica").fontSize(14);
     doc.moveDown(0.5);
 
     if (trip.startDate) {
@@ -54,14 +56,17 @@ const generateItineraryPDF = (preparedData, response) => {
         doc.text(`Notes: ${trip.notes}`);
     }
 
-    doc.moveDown();
+    doc.moveDown(2);
 
     // Add each day and its trip items.
-    doc.fontSize(14).text("Daily Itinerary");
+    doc.font("Helvetica-Bold").fontSize(18).text("Daily Itinerary");
+    doc.font("Helvetica");
     doc.moveDown(0.5);
 
     for (const dateKey in groupedTripItems) {
-        doc.fontSize(12).text(formatDate(dateKey));
+        doc.moveDown(0.5);
+        doc.font("Helvetica-Bold").fontSize(16).text(formatDate(dateKey));
+        doc.font("Helvetica");
         doc.moveDown(0.5);
 
         const tripItemsForDay = groupedTripItems[dateKey];
@@ -70,7 +75,8 @@ const generateItineraryPDF = (preparedData, response) => {
             const tripItem = tripItemsForDay[i];
             const labels = getTimeLabels(tripItem.type);
 
-            doc.text(`• ${tripItem.title}`);
+            doc.font("Helvetica-Bold").fontSize(14).text(`• ${tripItem.title}`);
+            doc.font("Helvetica").fontSize(13);
 
             if (tripItem.type) {
                 doc.text(`  Type: ${capitaliseFirstLetter(tripItem.type)}`);
